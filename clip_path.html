@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Clip path transition</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="clip_path.css">
+  </head>
+  <body>
+    <main>
+      <section id="s2">
+        <p>
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur
+        </p>
+        <a href="#s1">Back</a>
+      </section>
+      <section id="s1">
+        <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+        </p>
+        <a href="#s2">Next</a>
+      </section>
+    </main>
+<script>
+let responsivePath = (target,path) => {
+  target = document.querySelector(target).getBoundingClientRect();
+  path = path.split(" ");
+  let lastLetter = 0;
+  path = path.map((e,i) => {
+    if (isNaN(parseInt(e))) {
+      lastLetter = i;
+    }
+    if (e.includes("%")) {
+      e = parseFloat(e.split("%")[0])/100;
+      if ((i-lastLetter)%2 == 0) { //Y
+        e = e*target.height;
+      } else { //X
+        e = e*target.width;
+      }
+    }
+    return e;
+  });
+  path = path.join(" ");
+  return "path('"+path+"')";
+}
+let style = document.createElement("style");
+let square = 'M 0% 0% Q 50% 0% 100% 0% L 100% 100% L 0 100% Z';
+let wave = 'M -15% 0% Q 50% 490% 115% 0% L 100% 100% L 0 100% Z';
+document.head.append(style);
+style.innerText = `
+#s2 {
+  clip-path: `+responsivePath("#s2",wave)+`;
+}
+#s2:target {
+  clip-path: `+responsivePath("#s2",square)+`;  
+}
+`
+</script>
+  </body>
+</html>
